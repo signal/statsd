@@ -49,6 +49,7 @@ class Statsd
   end
 
   def send(stat, delta, type, sample_rate)
+    return unless AppConfig.monitoring_enabled?
     prefix = "#{@namespace}." unless @namespace.nil?
     sampled(sample_rate) { socket.send("#{prefix}#{stat}:#{delta}|#{type}#{'|@' << sample_rate.to_s if sample_rate < 1}", 0, @host, @port) }
   end
