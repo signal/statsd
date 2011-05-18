@@ -13,8 +13,8 @@ class Statsd
   
   # @param [String] host your statsd host
   # @param [Integer] port your statsd port
-  def initialize(host, port=8125)
-    @host, @port = host, port
+  def initialize(host, port=8125, enabled=true)
+    @host, @port, @enabled = host, port, enabled
   end
 
   # @param [String] stat stat name
@@ -49,7 +49,7 @@ class Statsd
   end
 
   def send(stat, delta, type, sample_rate)
-    return unless AppConfig.monitoring_enabled?
+    return unless @enabled
     prefix = "#{@namespace}." unless @namespace.nil?
     sampled(sample_rate) { socket.send("#{prefix}#{stat}:#{delta}|#{type}#{'|@' << sample_rate.to_s if sample_rate < 1}", 0, @host, @port) }
   end
