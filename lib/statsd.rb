@@ -53,7 +53,7 @@ class Statsd
   def send(stat, delta, type, sample_rate)
     return unless @enabled
     prefix = "#{@namespace}." unless @namespace.nil?
-    stat = stat.gsub('::', '.').gsub(RESERVED_CHARS_REGEX, '_').gsub('')
+    stat = stat.gsub('::', '.').gsub(RESERVED_CHARS_REGEX, '_')
     sampled(sample_rate) { socket.send("#{prefix}#{stat}:#{delta}|#{type}#{'|@' << sample_rate.to_s if sample_rate < 1}", 0, @host, @port) }
   end
 
